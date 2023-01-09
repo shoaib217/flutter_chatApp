@@ -10,11 +10,17 @@ class AuthScreen extends StatefulWidget {
 }
 
 class _AuthScreenState extends State<AuthScreen> {
+  void _submitAuthForm(String email,String username,String password,bool isLogin){
+    print("object = $isLogin");
+  }
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Theme.of(context).backgroundColor,
-      body: AuthForm(),
+    return GestureDetector(
+      onTap:()=> FocusScope.of(context).unfocus(),
+      child: Scaffold(
+        backgroundColor: Theme.of(context).backgroundColor,
+        body: AuthForm(_submitAuthForm),
+      ),
     );
   }
 }
