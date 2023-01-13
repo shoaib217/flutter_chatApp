@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 
 class AuthForm extends StatefulWidget {
-  AuthForm(this.submitForm,{super.key});
-  final void Function(String email,String username,String password,bool isLogin) submitForm;
+  const AuthForm(this.submitForm, this.isLoading, {super.key});
+  final bool isLoading;
+  final void Function(String email, String username, String password,
+      bool isLogin, BuildContext ctx) submitForm;
 
   @override
   State<AuthForm> createState() => _AuthFormState();
@@ -21,7 +23,8 @@ class _AuthFormState extends State<AuthForm> {
 
     if (_validate) {
       _formKey.currentState?.save();
-      widget.submitForm(_userEmail,_userName,_userPassword,_inLoginMode);
+      widget.submitForm(_userEmail.trim(), _userName.trim(), _userPassword,
+          _inLoginMode, context);
     }
   }
 
@@ -90,39 +93,45 @@ class _AuthFormState extends State<AuthForm> {
                     onSaved: (newValue) {
                       _userPassword = newValue!;
                     },
-                    decoration: const InputDecoration(labelText: 'Password',),
+                    decoration: const InputDecoration(
+                      labelText: 'Password',
+                    ),
                     obscureText: true,
                   ),
                   const SizedBox(
                     height: 12,
                   ),
-                  ElevatedButton(
-                    onPressed: _onLoginBtnClick,
-                    style: ButtonStyle(
-                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                        RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(18.0),
+                  if (widget.isLoading) CircularProgressIndicator(),
+                  if (!widget.isLoading)
+                    ElevatedButton(
+                      onPressed: _onLoginBtnClick,
+                      style: ButtonStyle(
+                        shape:
+                            MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(18.0),
+                          ),
                         ),
                       ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(_inLoginMode ? 'Login' : 'SignUp'),
+                      ),
                     ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(_inLoginMode ? 'Login' : 'SignUp'),
-                    ),
-                  ),
-                  TextButton(
-                      onPressed: () {
-                        FocusScope.of(context).unfocus();
-                        _formKey.currentState!.reset;
-                        setState(() {
-                          _inLoginMode = !_inLoginMode;
-                        });
-                      },
-                      child: Text(
-                        _inLoginMode
-                            ? 'Create New Account'
-                            : 'I Already Have An Account',
-                      ))
+                  if (!widget.isLoading)
+                    TextButton(
+                        onPressed: () {
+                          FocusScope.of(context).unfocus();
+                          _formKey.currentState!.reset;
+                          setState(() {
+                            _inLoginMode = !_inLoginMode;
+                          });
+                        },
+                        child: Text(
+                          _inLoginMode
+                              ? 'Create New Account'
+                              : 'I Already Have An Account',
+                        ))
                 ],
               ),
             ),

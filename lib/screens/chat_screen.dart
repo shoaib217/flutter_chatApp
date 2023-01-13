@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class ChatScreen extends StatelessWidget {
   const ChatScreen({super.key});
@@ -8,35 +8,28 @@ class ChatScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: FutureBuilder(
-        future: Firebase.initializeApp(),
-        builder: ((context, snapshot) {
-          if (snapshot.hasError) {
-            print(snapshot.error);
-          }
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          } else {
-            return StreamBuilder(
-                stream: FirebaseFirestore.instance
-                    .collection('chats/n16P0GnR5ns3F1Xl1Vet/messages')
-                    .snapshots(),
-                builder: (context, snapshot) =>
-                    snapshot.connectionState == ConnectionState.waiting
-                        ? const Center(
-                            child: CircularProgressIndicator(),
-                          )
-                        : Messages(snapshot.data!.docs));
-          }
-        }),
+      appBar: AppBar(title: Text('FlutterChat'),actions: [
+        IconButton(onPressed: () => FirebaseAuth.instance.signOut(), icon: Icon(Icons.logout))
+      ],),
+      body: StreamBuilder(
+        stream: FirebaseFirestore.instance
+            .collection('chats/n16P0GnR5ns3F1Xl1Vet/messages')
+            .snapshots(),
+        builder: (context, snapshot) =>
+            snapshot.connectionState == ConnectionState.waiting
+                ? const Center(
+                    child: CircularProgressIndicator(),
+                  )
+                : Messages(snapshot.data!.docs),
       ),
-      floatingActionButton: FloatingActionButton(onPressed: () {
-        FirebaseFirestore.instance.collection('chats/n16P0GnR5ns3F1Xl1Vet/messages').add({
-          'text':"this is floating button text"
-        });
-      },child: const Icon(Icons.add),),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          FirebaseFirestore.instance
+              .collection('chats/n16P0GnR5ns3F1Xl1Vet/messages')
+              .add({'text': "this is floating button text"});
+        },
+        child: const Icon(Icons.add),
+      ),
     );
   }
 }
