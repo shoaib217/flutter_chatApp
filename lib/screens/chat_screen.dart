@@ -1,3 +1,5 @@
+import 'package:chat_app/widgets/message_bubble.dart';
+import 'package:chat_app/widgets/new_messages.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -11,24 +13,24 @@ class ChatScreen extends StatelessWidget {
       appBar: AppBar(title: Text('FlutterChat'),actions: [
         IconButton(onPressed: () => FirebaseAuth.instance.signOut(), icon: Icon(Icons.logout))
       ],),
-      body: StreamBuilder(
-        stream: FirebaseFirestore.instance
-            .collection('chats/n16P0GnR5ns3F1Xl1Vet/messages')
-            .snapshots(),
-        builder: (context, snapshot) =>
-            snapshot.connectionState == ConnectionState.waiting
-                ? const Center(
-                    child: CircularProgressIndicator(),
-                  )
-                : Messages(snapshot.data!.docs),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          FirebaseFirestore.instance
-              .collection('chats/n16P0GnR5ns3F1Xl1Vet/messages')
-              .add({'text': "this is floating button text"});
-        },
-        child: const Icon(Icons.add),
+      body: Column(
+        children: [
+          Expanded(
+            child: StreamBuilder(
+              stream: FirebaseFirestore.instance
+                  .collection('chat')
+                  .orderBy('createdAt',descending: true)
+                  .snapshots(),
+              builder: (context, snapshot) =>
+                  snapshot.connectionState == ConnectionState.waiting
+                      ? const Center(
+                          child: CircularProgressIndicator(),
+                        )
+                      : Messages(snapshot.data!.docs),
+            ),
+          ),
+          NewMessage()
+        ],
       ),
     );
   }
@@ -40,10 +42,11 @@ class Messages extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
+      reverse: true,
       itemCount: document.length,
       itemBuilder: ((context, index) => Container(
             padding: const EdgeInsets.all(8.0),
-            child: Text(document[index]['text']),
+            child: MessageBubble(document[index]['text'],document[index]['userId'] == FirebaseAuth.instance.currentUser?.uid),
           )),
     );
   }
