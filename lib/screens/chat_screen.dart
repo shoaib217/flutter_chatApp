@@ -10,16 +10,21 @@ class ChatScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('FlutterChat'),actions: [
-        IconButton(onPressed: () => FirebaseAuth.instance.signOut(), icon: Icon(Icons.logout))
-      ],),
+      appBar: AppBar(
+        title: Text('FlutterChat'),
+        actions: [
+          IconButton(
+              onPressed: () => FirebaseAuth.instance.signOut(),
+              icon: Icon(Icons.logout))
+        ],
+      ),
       body: Column(
         children: [
           Expanded(
             child: StreamBuilder(
               stream: FirebaseFirestore.instance
                   .collection('chat')
-                  .orderBy('createdAt',descending: true)
+                  .orderBy('createdAt', descending: true)
                   .snapshots(),
               builder: (context, snapshot) =>
                   snapshot.connectionState == ConnectionState.waiting
@@ -46,7 +51,13 @@ class Messages extends StatelessWidget {
       itemCount: document.length,
       itemBuilder: ((context, index) => Container(
             padding: const EdgeInsets.all(8.0),
-            child: MessageBubble(document[index]['text'],document[index]['userId'] == FirebaseAuth.instance.currentUser?.uid),
+            child: MessageBubble(
+              document[index]['text'],
+              document[index]['userId'] ==
+                  FirebaseAuth.instance.currentUser?.uid,
+              document[index]['username'],
+              key: ValueKey(document[index].id),
+            ),
           )),
     );
   }
