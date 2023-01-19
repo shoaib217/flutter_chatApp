@@ -47,5 +47,11 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>We Need Access to let you pick an Image</string>
+	<key>NSCameraUsageDescription</key>
+	<string>We Need Access to let you pick an Image</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>We Need Access to let you record an Audio</string>
 </dict>
 </plist>
