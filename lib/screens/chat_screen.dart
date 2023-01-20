@@ -56,6 +56,7 @@ class Messages extends StatelessWidget {
               document[index]['userId'] ==
                   FirebaseAuth.instance.currentUser?.uid,
               document[index]['username'],
+              document[index]['userImage'],
               key: ValueKey(document[index].id),
             ),
           )),

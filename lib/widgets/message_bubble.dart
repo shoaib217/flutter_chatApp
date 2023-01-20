@@ -1,16 +1,23 @@
 import 'package:flutter/material.dart';
 
 class MessageBubble extends StatelessWidget {
-  const MessageBubble(this.message, this.isMe, this.username, {super.key});
+  const MessageBubble(this.message, this.isMe, this.username, this.imageUrl,
+      {super.key});
   final String message;
   final String username;
+  final String imageUrl;
   final bool isMe;
 
   @override
   Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.end,
       children: [
+        if (!isMe)
+          CircleAvatar(
+            backgroundImage: NetworkImage(imageUrl),
+          ),
         Column(
           crossAxisAlignment:
               isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
@@ -24,21 +31,20 @@ class MessageBubble extends StatelessWidget {
               ),
             ),
             Container(
-              width: 250,
+              width: 200,
               padding: const EdgeInsets.symmetric(vertical: 7, horizontal: 14),
               margin: const EdgeInsets.symmetric(vertical: 3, horizontal: 6),
               decoration: BoxDecoration(
-                  color: isMe
-                      ? Colors.grey[300]
-                      : Theme.of(context).colorScheme.secondary,
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(12),
-                    topRight: Radius.circular(12),
-                    bottomLeft:
-                        !isMe ? Radius.circular(0) : Radius.circular(12),
-                    bottomRight:
-                        isMe ? Radius.circular(0) : Radius.circular(12),
-                  )),
+                color: isMe
+                    ? Colors.grey[300]
+                    : Theme.of(context).colorScheme.secondary,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(12),
+                  topRight: Radius.circular(12),
+                  bottomLeft: !isMe ? Radius.circular(0) : Radius.circular(12),
+                  bottomRight: isMe ? Radius.circular(0) : Radius.circular(12),
+                ),
+              ),
               child: Text(
                 message,
                 style: TextStyle(
@@ -49,6 +55,10 @@ class MessageBubble extends StatelessWidget {
             ),
           ],
         ),
+        if (isMe)
+          CircleAvatar(
+            backgroundImage: NetworkImage(imageUrl),
+          ),
       ],
     );
   }
