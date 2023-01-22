@@ -115,7 +115,7 @@ class _AuthFormState extends State<AuthForm> {
                     decoration: const InputDecoration(
                       labelText: 'Password',
                     ),
-                    obscureText: true,
+                    obscureText: false,
                   ),
                   const SizedBox(
                     height: 12,

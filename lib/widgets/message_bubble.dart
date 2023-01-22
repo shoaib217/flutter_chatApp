@@ -8,16 +8,34 @@ class MessageBubble extends StatelessWidget {
   final String imageUrl;
   final bool isMe;
 
+  void _openImageDialog(BuildContext ctx, String imgUrl) {
+    showDialog(
+        context: ctx,
+        builder: (context) {
+          return Dialog(
+              child: Image.network(
+            imgUrl,
+            fit: BoxFit.cover,
+          ));
+        });
+  }
+
+  Widget _setUserImage(BuildContext ctx, imgUrl) {
+    return TextButton(
+      onPressed: () => _openImageDialog(ctx, imgUrl),
+      child: CircleAvatar(
+        backgroundImage: NetworkImage(imageUrl),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
-        if (!isMe)
-          CircleAvatar(
-            backgroundImage: NetworkImage(imageUrl),
-          ),
+        if (!isMe) _setUserImage(context, imageUrl),
         Column(
           crossAxisAlignment:
               isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
@@ -55,10 +73,7 @@ class MessageBubble extends StatelessWidget {
             ),
           ],
         ),
-        if (isMe)
-          CircleAvatar(
-            backgroundImage: NetworkImage(imageUrl),
-          ),
+        if (isMe) _setUserImage(context, imageUrl)
       ],
     );
   }
