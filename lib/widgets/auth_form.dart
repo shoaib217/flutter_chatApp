@@ -62,6 +62,9 @@ class _AuthFormState extends State<AuthForm> {
                   if (!_inLoginMode) UserImagePicker(_capturedImage),
                   TextFormField(
                     key: const ValueKey('email'),
+                    autocorrect: false,
+                    textCapitalization: TextCapitalization.none,
+                    enableSuggestions: false,
                     validator: (value) {
                       if (value != null) {
                         if (value.trim().isEmpty) {
@@ -82,6 +85,8 @@ class _AuthFormState extends State<AuthForm> {
                   if (!_inLoginMode)
                     TextFormField(
                       key: const ValueKey('username'),
+                      autocorrect: true,
+                      enableSuggestions: true,
                       validator: (value) {
                         if (value != null) {
                           if (value.trim().isEmpty) {
