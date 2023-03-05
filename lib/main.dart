@@ -1,5 +1,6 @@
 import 'package:chat_app/screens/auth_screen.dart';
 import 'package:chat_app/screens/chat_screen.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -41,7 +42,6 @@ class MyApp extends StatelessWidget {
 
 class SplashScreen extends StatelessWidget {
   const SplashScreen({super.key});
-
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
@@ -82,7 +82,7 @@ class SplashScreen extends StatelessWidget {
                   );
                 }
                 if (snapshot.hasData) {
-                  return const ChatScreen();
+                  return ChatScreen(snapshot.data?.uid);
                 }
                 return const AuthScreen();
               });

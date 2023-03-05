@@ -14,6 +14,9 @@ class _NewMessagesState extends State<NewMessage> {
   var _enteredText = "";
 
   void _sendMessage() async {
+    if(_enteredText.trim().isEmpty){
+      return;
+    }
     FocusScope.of(context).unfocus();
     final user = FirebaseAuth.instance.currentUser;
     final userData = await FirebaseFirestore.instance
@@ -34,8 +37,8 @@ class _NewMessagesState extends State<NewMessage> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(top: 8, left: 4, right: 4),
-      padding: EdgeInsets.all(8),
+      margin: EdgeInsets.only(left: 8, right: 8,bottom: 8),
+      padding: EdgeInsets.all(10),
       child: Row(
         children: [
           Expanded(
@@ -51,11 +54,17 @@ class _NewMessagesState extends State<NewMessage> {
                 });
               },
               textInputAction: TextInputAction.send,
+              onSubmitted: (value) {
+                _sendMessage();
+              },
             ),
           ),
-          IconButton(
-              onPressed: _enteredText.trim().isEmpty ? null : _sendMessage,
-              icon: Icon(Icons.send))
+          Container(
+            decoration: const BoxDecoration(shape: BoxShape.circle,color: Colors.green),
+            child: IconButton(
+                onPressed: _enteredText.trim().isEmpty ? null : _sendMessage,
+                icon: const Icon(Icons.send,color: Colors.white,),),
+          )
         ],
       ),
     );
