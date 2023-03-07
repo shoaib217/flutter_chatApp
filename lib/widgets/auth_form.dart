@@ -30,12 +30,17 @@ class _AuthFormState extends State<AuthForm> {
     FocusScope.of(context).unfocus();
 
     if (_pickedImage == null && !_inLoginMode) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          backgroundColor: Theme.of(context).errorColor,
+      ScaffoldMessenger.of(context).clearSnackBars();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          backgroundColor: Theme.of(context).snackBarTheme.backgroundColor,
           content: const Text(
             'Please Pick an Image',
             style: TextStyle(fontSize: 16),
-          )));
+          ),
+          action: SnackBarAction(label: 'Close', onPressed: ()=>FocusScope.of(context).unfocus()),
+        ),
+      );
       return;
     }
 
@@ -48,115 +53,131 @@ class _AuthFormState extends State<AuthForm> {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Card(
-        margin: const EdgeInsets.all(20),
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  if (!_inLoginMode) UserImagePicker(_capturedImage),
-                  TextFormField(
-                    key: const ValueKey('email'),
-                    autocorrect: false,
-                    textCapitalization: TextCapitalization.none,
-                    enableSuggestions: false,
-                    validator: (value) {
-                      if (value != null) {
-                        if (value.trim().isEmpty) {
-                          return 'Please Enter Email Address';
-                        } else if (!value.contains('@')) {
-                          return 'Please Enter Valid Email';
-                        }
-                        return null;
-                      }
-                    },
-                    onSaved: (newValue) {
-                      _userEmail = newValue!;
-                    },
-                    keyboardType: TextInputType.emailAddress,
-                    decoration:
-                        const InputDecoration(labelText: 'Email Address'),
-                  ),
-                  if (!_inLoginMode)
+    return Container(
+      decoration: const BoxDecoration(
+          gradient: LinearGradient(
+        colors: [
+          Color.fromARGB(255, 21, 236, 229),
+          Color.fromARGB(100, 200, 100, 200),
+        ],
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+      )),
+      child: Center(
+        child: Card(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          borderOnForeground: false,
+          margin: const EdgeInsets.all(20),
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (!_inLoginMode) UserImagePicker(_capturedImage),
                     TextFormField(
-                      key: const ValueKey('username'),
-                      autocorrect: true,
-                      enableSuggestions: true,
+                      key: const ValueKey('email'),
+                      autocorrect: false,
+                      textCapitalization: TextCapitalization.none,
+                      enableSuggestions: false,
                       validator: (value) {
                         if (value != null) {
                           if (value.trim().isEmpty) {
-                            return 'Please Enter UserName';
-                          } else if (value.length < 4) {
-                            return 'Please Enter Atleast 4 Characters';
+                            return 'Please Enter Email Address';
+                          } else if (!value.contains('@')) {
+                            return 'Please Enter Valid Email';
                           }
                           return null;
                         }
                       },
                       onSaved: (newValue) {
-                        _userName = newValue!;
+                        _userEmail = newValue!;
                       },
-                      decoration: const InputDecoration(labelText: 'Username'),
+                      keyboardType: TextInputType.emailAddress,
+                      decoration:
+                          const InputDecoration(labelText: 'Email Address'),
                     ),
-                  TextFormField(
-                    key: const ValueKey('password'),
-                    validator: (value) {
-                      if (value != null) {
-                        if (value.trim().isEmpty) {
-                          return 'Please Enter password';
-                        } else if (value.length < 7) {
-                          return 'Please Enter Atleast 7 characters';
+                    if (!_inLoginMode)
+                      TextFormField(
+                        key: const ValueKey('username'),
+                        autocorrect: true,
+                        enableSuggestions: true,
+                        validator: (value) {
+                          if (value != null) {
+                            if (value.trim().isEmpty) {
+                              return 'Please Enter UserName';
+                            } else if (value.length < 4) {
+                              return 'Please Enter Atleast 4 Characters';
+                            }
+                            return null;
+                          }
+                        },
+                        onSaved: (newValue) {
+                          _userName = newValue!;
+                        },
+                        decoration:
+                            const InputDecoration(labelText: 'Username'),
+                      ),
+                    TextFormField(
+                      key: const ValueKey('password'),
+                      validator: (value) {
+                        if (value != null) {
+                          if (value.trim().isEmpty) {
+                            return 'Please Enter password';
+                          } else if (value.length < 7) {
+                            return 'Please Enter Atleast 7 characters';
+                          }
+                          return null;
                         }
-                        return null;
-                      }
-                    },
-                    onSaved: (newValue) {
-                      _userPassword = newValue!;
-                    },
-                    decoration: const InputDecoration(
-                      labelText: 'Password',
+                      },
+                      onSaved: (newValue) {
+                        _userPassword = newValue!;
+                      },
+                      decoration: const InputDecoration(
+                        labelText: 'Password',
+                      ),
+                      obscureText: false,
                     ),
-                    obscureText: false,
-                  ),
-                  const SizedBox(
-                    height: 12,
-                  ),
-                  if (widget.isLoading) CircularProgressIndicator(),
-                  if (!widget.isLoading)
-                    ElevatedButton(
-                      onPressed: _onLoginBtnClick,
-                      style: ButtonStyle(
-                        shape:
-                            MaterialStateProperty.all<RoundedRectangleBorder>(
-                          RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(18.0),
+                    const SizedBox(
+                      height: 12,
+                    ),
+                    if (widget.isLoading) CircularProgressIndicator(),
+                    if (!widget.isLoading)
+                      ElevatedButton(
+                        onPressed: _onLoginBtnClick,
+                        style: ButtonStyle(
+                          shape:
+                              MaterialStateProperty.all<RoundedRectangleBorder>(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(18.0),
+                            ),
                           ),
                         ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(_inLoginMode ? 'Login' : 'SignUp'),
+                        ),
                       ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(_inLoginMode ? 'Login' : 'SignUp'),
-                      ),
-                    ),
-                  if (!widget.isLoading)
-                    TextButton(
-                        onPressed: () {
-                          FocusScope.of(context).unfocus();
-                          _formKey.currentState!.reset;
-                          setState(() {
-                            _inLoginMode = !_inLoginMode;
-                          });
-                        },
-                        child: Text(
-                          _inLoginMode
-                              ? 'Create New Account'
-                              : 'I Already Have An Account',
-                        ))
-                ],
+                    if (!widget.isLoading)
+                      TextButton(
+                          onPressed: () {
+                            FocusScope.of(context).unfocus();
+                            _formKey.currentState?.reset();
+                            setState(() {
+                              _inLoginMode = !_inLoginMode;
+                            });
+                          },
+                          child: Text(
+                            _inLoginMode
+                                ? 'Create New Account'
+                                : 'I Already Have An Account',
+                          ))
+                  ],
+                ),
               ),
             ),
           ),

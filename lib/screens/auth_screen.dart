@@ -82,7 +82,6 @@ class _AuthScreenState extends State<AuthScreen> {
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
-        backgroundColor: Theme.of(context).backgroundColor,
         body: AuthForm(_submitAuthForm, _isLoading),
       ),
     );
